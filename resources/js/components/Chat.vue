@@ -1,31 +1,53 @@
 <template>
     <div class="messaging">
         <div class="inbox_msg">
-            <chat-contacts/>
-            <chat-messages/>
+            <chat-contacts :contacts="contacts"/>
+            <chat-messages :messages="messages" :contact="selectedContact"/>
         </div>
     </div>
 </template>
 
 <script>
+    import ChatContacts from "./ChatContacts";
+
     export default {
+        props: {
+            auth: {
+                type: Object,
+                required: true
+            }
+        },
+        components() {
+            ChatContacts
+        },
+        data() {
+            return {
+                contacts: []
+            };
+        },
         mounted() {
-            console.log('Component mounted.')
+            console.log(this.auth);
+
+            axios.get('/api/contacts')
+                .then(response => {
+                    this.contacts = response.data;
+                    console.log(response.data);
+                });
         }
     }
 </script>
 
 <style>
-    img {
-        max-width: 100%;
-    }
-
     .inbox_people {
         background: #f8f8f8 none repeat scroll 0 0;
         float: left;
         overflow: hidden;
         width: 40%;
         border-right: 1px solid #c4c4c4;
+    }
+
+    img {
+        max-width: 100%;
     }
 
     .inbox_msg {
@@ -216,10 +238,6 @@
         right: 0;
         top: 11px;
         width: 33px;
-    }
-
-    .messaging {
-        padding: 0 0 50px 0;
     }
 
     .msg_history {
