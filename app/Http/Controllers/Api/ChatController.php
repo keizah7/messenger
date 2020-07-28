@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Message;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -23,5 +24,12 @@ class ChatController extends Controller
         $contacts = User::where('id', '!=', auth()->id())->get();
 
         return response()->json($contacts);
+    }
+
+    public function getMessages(User $user, Request $request)
+    {
+        $messages = Message::whereFrom($user->id)->orWhere('to', $user->id)->get();
+
+        return response()->json($messages);
     }
 }

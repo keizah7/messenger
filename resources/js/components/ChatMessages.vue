@@ -1,60 +1,108 @@
 <template>
     <div class="mesgs">
-        <div class="msg_history">
-            <div class="incoming_msg">
-                <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                <div class="received_msg">
-                    <div class="received_withd_msg">
-                        <p>Test which is a new approach to have all
-                            solutions</p>
-                        <span class="time_date"> 11:01 AM    |    June 9</span></div>
+        <div v-if="contact">
+            <div class="msg_history">
+                <div v-for="message in messages"
+                     :class="`${message.to === contact.id ? 'incoming_msg' : 'outgoing_msg'}`"
+                     :key="message.id">
+                    <div class="incoming_msg_img" v-if="message.to === contact.id">
+                        <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">
+                    </div>
+                    <div :class="`${message.to === contact.id ? 'received_msg' : 'sent_msg'}`">
+                        <div :class="`${message.to === contact.id ? 'received_withd_msg' : ''}`">
+
+                            <p>{{ message.text }}</p>
+                            <span class="time_date"> 11:01 AM | June 9</span>
+                        </div>
+
+                    </div>
                 </div>
             </div>
-            <div class="outgoing_msg">
-                <div class="sent_msg">
-                    <p>Test which is a new approach to have all
-                        solutions</p>
-                    <span class="time_date"> 11:01 AM    |    June 9</span> </div>
-            </div>
-            <div class="incoming_msg">
-                <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                <div class="received_msg">
-                    <div class="received_withd_msg">
-                        <p>Test, which is a new approach to have</p>
-                        <span class="time_date"> 11:01 AM    |    Yesterday</span></div>
-                </div>
-            </div>
-            <div class="outgoing_msg">
-                <div class="sent_msg">
-                    <p>Apollo University, Delhi, India Test</p>
-                    <span class="time_date"> 11:01 AM    |    Today</span> </div>
-            </div>
-            <div class="incoming_msg">
-                <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                <div class="received_msg">
-                    <div class="received_withd_msg">
-                        <p>We work directly with our designers and suppliers,
-                            and sell direct to you, which means quality, exclusive
-                            products, at a price anyone can afford.</p>
-                        <span class="time_date"> 11:01 AM    |    Today</span></div>
-                </div>
-            </div>
+            <chat-input @send="sendMessage"></chat-input>
         </div>
-        <div class="type_msg">
-            <div class="input_msg_write">
-                <input type="text" class="write_msg" placeholder="Type a message" />
-                <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
-            </div>
+        <div v-else>
+            Select a contact
         </div>
     </div>
 </template>
 
 <script>
+    import ChatInput from "./ChatInput";
+
     export default {
-        name: "ChatMessages"
+        name: 'ChatMessages',
+
+        props: {
+            contact: {
+                type: Object,
+            },
+            messages: {
+                type: Array,
+                default: [],
+            },
+        },
+
+        methods: {
+            sendMessage (message) {
+                console.log(message);
+            }
+        },
+
+        components: {ChatInput}
     }
 </script>
 
 <style scoped>
+    .msg_history {
+        height: 516px;
+        overflow-y: auto;
+    }
 
+    .incoming_msg_img {
+        display: inline-block;
+        width: 6%;
+    }
+
+    .received_msg {
+        display: inline-block;
+        padding: 0 0 0 10px;
+        vertical-align: top;
+        width: 92%;
+    }
+
+    .sent_msg p {
+        background: #05728f none repeat scroll 0 0;
+        border-radius: 3px;
+        font-size: 14px;
+        margin: 0;
+        color: #fff;
+        padding: 5px 10px 5px 12px;
+        width: 100%;
+    }
+
+    .sent_msg {
+        float: right;
+        width: 46%;
+    }
+
+    .time_date {
+        color: #747474;
+        display: block;
+        font-size: 12px;
+        margin: 8px 0 0;
+    }
+
+    .received_withd_msg p {
+        background: #ebebeb none repeat scroll 0 0;
+        border-radius: 3px;
+        color: #646464;
+        font-size: 14px;
+        margin: 0;
+        padding: 5px 10px 5px 12px;
+        width: 100%;
+    }
+
+    .received_withd_msg {
+        width: 57%;
+    }
 </style>
