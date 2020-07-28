@@ -26,10 +26,34 @@ class ChatController extends Controller
         return response()->json($contacts);
     }
 
+    /**
+     * Get all messages for given user
+     *
+     * @param User $user
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getMessages(User $user, Request $request)
     {
         $messages = Message::whereFrom($user->id)->orWhere('to', $user->id)->get();
 
         return response()->json($messages);
+    }
+
+    /**
+     * Save message from authenticated user
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sendMessage(Request $request)
+    {
+        $message = Message::create([
+            'from' => auth()->id(),
+            'to' => $request->to,
+            'text' => $request->text
+        ]);
+
+        return response()->json($message);
     }
 }

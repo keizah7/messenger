@@ -3,14 +3,13 @@
         <div v-if="contact">
             <div class="msg_history">
                 <div v-for="message in messages"
-                     :class="`${message.to === contact.id ? 'incoming_msg' : 'outgoing_msg'}`"
+                     :class="`${message.to !== contact.id ? 'incoming_msg' : 'outgoing_msg'}`"
                      :key="message.id">
-                    <div class="incoming_msg_img" v-if="message.to === contact.id">
+                    <div class="incoming_msg_img" v-if="message.to !== contact.id">
                         <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">
                     </div>
-                    <div :class="`${message.to === contact.id ? 'received_msg' : 'sent_msg'}`">
-                        <div :class="`${message.to === contact.id ? 'received_withd_msg' : ''}`">
-
+                    <div :class="`${message.to !== contact.id ? 'received_msg' : 'sent_msg'}`">
+                        <div :class="`${message.to !== contact.id ? 'received_withd_msg' : ''}`">
                             <p>{{ message.text }}</p>
                             <span class="time_date"> 11:01 AM | June 9</span>
                         </div>
@@ -44,7 +43,28 @@
 
         methods: {
             sendMessage (message) {
-                console.log(message);
+                axios.post('/chat/send-message', {
+                    text: message,
+                    to: this.contact.id,
+                }).then(response => {
+                    this.$emit('newMessage', response.data);
+                });
+            },
+
+            scrollToBottom () {
+                setTimeout(() => {
+                    let messagesContainer = this.$el.querySelector(".msg_history");
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 50);
+            }
+        },
+
+        watch: {
+            contact (contact) {
+                this.scrollToBottom();
+            },
+            messages (messages) {
+                this.scrollToBottom();
             }
         },
 
@@ -52,7 +72,7 @@
     }
 </script>
 
-<style scoped>
+<style>
     .msg_history {
         height: 516px;
         overflow-y: auto;

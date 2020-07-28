@@ -20,5 +20,6 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('contacts', 'Api\ChatController@getContacts');
-Route::get('messages/{user}', 'Api\ChatController@getMessages');
+Route::get('chat/contacts', 'Api\ChatController@getContacts');
+Route::get('chat/messages/{user}', 'Api\ChatController@getMessages');
+Route::post('chat/send-message', 'Api\ChatController@sendMessage');

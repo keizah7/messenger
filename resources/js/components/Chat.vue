@@ -2,7 +2,7 @@
     <div class="messaging">
         <div class="inbox_msg">
             <chat-contacts :contacts="contacts" @selected="showContactMessages"/>
-            <chat-messages :contact="selectedContact" :messages="messages"/>
+            <chat-messages :contact="selectedContact" :messages="messages" @newMessage="saveNewMessage"/>
         </div>
     </div>
 </template>
@@ -28,17 +28,21 @@
             };
         },
         mounted () {
-            axios.get('/contacts')
+            axios.get('/chat/contacts')
                 .then(response => {
                     this.contacts = response.data;
                 });
         },
         methods: {
             showContactMessages (contact) {
-                axios.get(`/messages/${contact.id}`).then(response => {
+                axios.get(`/chat/messages/${contact.id}`).then(response => {
                     this.selectedContact = contact;
                     this.messages = response.data;
                 });
+            },
+
+            saveNewMessage (message) {
+                this.messages.push(message);
             }
         },
         components: {ChatContacts, ChatMessages},
